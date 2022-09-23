@@ -22,66 +22,72 @@
 import random
 
 def play_again() -> bool:
-    ''' Asks the user if they want to play again, returns False if N or NO, and True if Y or YES.Keeps asking until they respond yes '''
+    ''' Asks the user if they want to play again, returns False if N or NO, and True if Y or YES.  Keeps asking until they respond yes '''
+    user_input = input("Do you want to play again? ==>")
 
-    user_input = input("Do you want to play again? ==> ")
-
-    
-    else:
-        
-        while user_input.lower() not in ["yes","y","no","n"]:#while user_input.lower != "y' or 'n' or 'yes' or 'y': 
-
-            print("You must enter Y/YES/N/NO to continue. Please try again")
-            user_input = input("Do you want to play again? ==> ")
-        
-        if (user_input == "Y") or (user_input == "y") or (user_input == "YES") or (user_input == "yes"):
-
-            return True
-
-        elif (user_input == "N") or (user_input == "n") or (user_input == "NO") or (user_input == "no"):
-
-            return False 
-
+    while (user_input.upper() != "YES") and (user_input.upper() != "Y") and (user_input.upper() != "NO") and (user_input.upper() != "NO"):
+        print("Try again.")
+        user_input = input("Do you want to play again?")
+    if (user_input.upper() == "YES") or (user_input.upper() == "Y"):
+        return True
+    elif (user_input.upper() == "NO") or (user_input.upper() == "N"):
+        return False
      
 def get_wager(bank : int) -> int:
     ''' Asks the user for a wager chip amount.  Continues to ask if they result is <= 0 or greater than the amount they have '''
+    wager = int(input("How many chips do you want to wager? ==> "))
 
-    user_wager = int(input("How many chips do you want to wager?"))
+    while (wager < 0) or (wager > bank):
+        if(wager < 0):
+            print("The wager amount must be greater than 0.  Please enter again. ")
+            wager = int(input("How many chips do you want to wager? ==> "))
+        elif(wager > bank):
+            print("The wager amount cannot be greater than how much you have. ", bank)
+            wager = int(input("How many chips do you want to wager? ==> "))
 
-    if (user_wager >= 0) and (user_wager <= bank):
-
-        return user_wager
-
-    else:
-        
-        while (user_wager < 0) or (user_wager > bank):
-
-            user_wager = int(input("How many chips do you want to wager?"))
-            print("You must enter a valid value.")
-            
-        if (user_wager >= 0) and (user_wager <= bank):
-            return user_wager
-              
+    return wager
 
 def get_slot_results() -> tuple:
     ''' Returns the result of the slot pull '''
+    
 
-    return random.randint(1,10), random.randint(1,10), random.randint(1,10)
+    return random.randint(1,10),random.randint(1,10),random.randint(1,10)
 
 def get_matches(reela, reelb, reelc) -> int:
     ''' Returns 3 for all 3 match, 2 for 2 alike, and 0 for none alike. '''
-
-    return 0
+    if (reela == reelb) and (reela == reelc):
+        return 3
+    elif (reela == reelc) and (reela != reelb):
+        return 2
+    elif (reela == reelb) and (reela != reelc):
+        return 2
+    elif (reelb == reelc) and (reelb != reela):
+        return 2
+    else:
+        return 0
 
 def get_bank() -> int:
     ''' Returns how many chips the user wants to play with.  Loops until a value greater than 0 and less than 101 '''
+    bank = int(input("How many chips do you want to start with? ==> "))
 
-    return 0
+    while (bank < 0) or (bank > 100):
+        if (bank < 0):
+            print("Too low a value, you can only choose 1 - 100 chips ")
+            bank = int(input("How many chips do you want to start with? ==> "))
+        elif (bank > 100):
+            print("Too high a value, you can only choose 1 - 100 chips ")
+            bank = int(input("How many chips do you want to start with? ==> "))
+        
+    return bank
 
 def get_payout(wager, matches):
     ''' Returns how much the payout is.. 10 times the wager if 3 matched, 3 times the wager if 2 match, and negative wager if 0 match '''
-    return wager * -1     
-
+    if matches == 3:
+        return (wager * 10)
+    elif matches == 2:
+        return (wager * 3)
+    else:
+        return (wager * -1)
 
 if __name__ == "__main__":
 
@@ -90,7 +96,7 @@ if __name__ == "__main__":
 
         bank = get_bank()
 
-        while True:  # Replace with condition for if they still have money.
+        while bank > 0:  # Replace with condition for if they still have money.
             
             wager = get_wager(bank)
 
