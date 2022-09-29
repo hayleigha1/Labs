@@ -1,3 +1,4 @@
+
 ########################################################################
 ##
 ## CS 101 Lab
@@ -18,8 +19,6 @@
 ##
 ########################################################################
 
-
-# import statements
 import string
 
 # functions
@@ -50,7 +49,7 @@ def get_grade (library_card):
     else:
         return "Invalid Grade"
 
-def get_check_digit(library_card):
+def get_check_digit(library_card): # the formula to calculate the check digit was (index+1)*value
     sum = 0
     for i in range (len(library_card)):
         value = character_value(library_card[i])
@@ -60,47 +59,56 @@ def get_check_digit(library_card):
     return check_digit
 
 def verify_check_digit(library_card):
-    for i in range (0,5):
-        if len(library_card) != 10:
-            return False, "The length of the number given must be 10"
+
+    if len(library_card) != 10:
+        return False, "The length of the number given must be 10"
 
     for i in range (0,5):
         if (ord(library_card[i]) < 65) or (ord(library_card[i]) > 90):
             error = str(library_card[i])
             i = str(i)
-            return False, "The first 5 characters must be A-Z, the invalid character is at " + i + " is " + error
+            return (False, "The first 5 characters must be A-Z, the invalid character is at " + i + " is " + error)
 
     for i in range(7,10):
         if (library_card[i] < '0') or (library_card[i] > '9'):
             error = str(library_card[i])
             i = str(i)
-            return False, "The last 3 characters must be 0-9, the invalid character is at " + i + " is " + error
-        else:
-            return True, ""
+            return (False, "The last 3 characters must be 0-9, the invalid character is at " + i + " is " + error) #Here I am concatenating the strings.
 
-    for i in range(6):
-        if (library_card[5] != "1") and (library_card[5] != "2") and (library_card[5] != "3"):
-
-            return False, "The sixth character must be 1 2 or 3"
-
-    for i in range(7):
-        if (library_card[6] != "1") or (library_card[6] != "2") or (library_card[6] != "3") or (library_card[6] != "4"):
-            return False, "The seventh character must be 1 2 or 3"
-    for i in range (10):
-        if library_card[9] != get_check_digit(library_card):
-            error = str(library_card[9])
-            correct = str(get_check_digit(library_card))
-            return False, "Check Digit " + error + " does not match calculated value " + correct + " ."
-        else:
-            return True, ""
     
+    if (library_card[5] != '1' and library_card[5] != '2' and library_card[5] != '3'):
+            return (False, "The sixth character must be 1 2 or 3")
     
+    if (library_card[6] != '1' and library_card[6] != '2' \
+        and library_card[6] != '3' and library_card[6] != '4'):
+            return (False, "The seventh character must be 1 2 3 or 4")
     
+    correctval = get_check_digit(library_card)
+    index9 = int(library_card[9])
     
+    if index9 != correctval:
+        explan = "Check Digit " + str(index9) + " does not match calculated value " \
+               + str(correctval) + "."
+        return (False,explan)
         
-    
-    
-    
+    return (True,'')
+
+
+
+def main():
+    '''The main function allows for me to be able to repeat rhis process without reprinting the steps over and over''' 
+    while(1):
+        library_card = input("Enter Library Card. Hit Enter to Exit ==> ") 
+        (result,explan) = verify_check_digit(library_card)
+        
+        if result == True:
+            print("\nLibrary card is valId.")
+            print("The card belongs to a student in " + get_school(library_card))
+            print("The card belongs to a " + get_grade(library_card))
+                
+        else:
+            print("Library card is invalid.")
+            print(explan)
 
 if __name__ == "__main__":
 
@@ -108,10 +116,5 @@ if __name__ == "__main__":
     print(f'{"Linda Hall":^60}')
     print(f'{"Library Card Check":^60}')
     print("==" * 30)
-    
-    
-    
-    library_card = input("Enter Library Card.  Hit Enter to Exit ==> ")
-    
-    
-    
+
+    print(main())
